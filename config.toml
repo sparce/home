@@ -158,6 +158,7 @@ url = "/contact/"
 weight = 6
 [[menu.main]]
 name = "Admin"
+pre = "<i class='fas fa-edit'></i>"
 url = "/admin/"
 weight = 6
 [[menu.main]]
