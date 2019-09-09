@@ -1,34 +1,28 @@
 dist: xenial
 sudo: required
-
 install:
-  - wget "https://github.com/gohugoio/hugo/releases/download/v${HUGO_RELEASE}/hugo_extended_${HUGO_RELEASE}_Linux-64bit.deb"
-  - sudo dpkg -i hugo*.deb
-
+- wget "https://github.com/gohugoio/hugo/releases/download/v${HUGO_RELEASE}/hugo_extended_${HUGO_RELEASE}_Linux-64bit.deb"
+- sudo dpkg -i hugo*.deb
 script:
-  - hugo version # prints the Hugo version, just in case.
-  - hugo # build the website
-
+- hugo version
+- hugo
 before_deploy:
-  - openssl aes-256-cbc -K $encrypted_2713a52fe9aa_key -iv $encrypted_2713a52fe9aa_iv -in deploy_rsa.enc -out deploy_rsa -d
-  - eval "$(ssh-agent -s)"
-  - chmod 600 deploy_rsa
-  - ssh-add deploy_rsa
-  - echo -e "Host ${DEPLOY_HOST}\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
-
+- openssl aes-256-cbc -K $encrypted_2713a52fe9aa_key -iv $encrypted_2713a52fe9aa_iv
+  -in deploy_rsa.enc -out deploy_rsa -d
+- eval "$(ssh-agent -s)"
+- chmod 600 deploy_rsa
+- ssh-add deploy_rsa
+- echo -e "Host ${DEPLOY_HOST}\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
 deploy:
   provider: script
   skip-cleanup: true
   script: echo "rsync -r --quiet --delete-after ${TRAVIS_BUILD_DIR}/public/* ${DEPLOY_USER}@${DEPLOY_HOST}:${DEPLOY_DIRECTORY}"
   on:
     branch: master
-
 env:
   global:
-    - PRODUCTION=true
-    - HUGO_RELEASE=0.58.1
-    - secure: N4PNRPal++xRo9I/tFin1L3DBwYghvjRwdOBYbIPcOdd1I/z7BmWFS+KoTQZO/By0Yl2vT7rkDn8nmMX623WHasKuFwqTbDHQyJokIb2e9gO3kUDPvyrQOcJgpoumOxosYl8hEHUL51+A9UgyY7umrepFeqc/4jWrIppi26IHBjK3tR3m28RuE0ONA/6Xu+xS4mOAV0GNiV3TF23TXvBa73gjvIEutke1uRn9FlMV2jFKp1GDX1YujWdTEPqCVbHvrBkVJtzCQnwhmxYtZ3wbDn8HQQxL0VDKZfdgW+6gH+kRNDX0do43x4HBg/be5AX0fBWPM/skKSO13sJsQ+LbO3QUl/3U2lOXSWFilkBY+dp6zR1eiTl0+1F/hatn3Ol8Mn/jbrr9FAMhZXWF3tGcC0kJEnCiWicOOTqgy0D95UiLO7A4tLMtb/Si0vqsuQszeSILgYsgMid/v7g0dlAfQw/+GExzNZ+GQ5uDpk41gQ9i+Nj3CIqOKbaK/KROnnx6bXZi4qsUwaicdg5ehhm91ROquArv6jPYDH99OkQDwcIUx5heIceM5JbsT2G2IKbvbmQu99IP8JYe/NuyfcGpSP/cFXC9ZtlRxB27wCj2VXA0A9WPMOR+5O1T1V+CPPtu7K0fjsgM0K8UyE/eHkwqYK0hbFVr+qZ6SHGYALHzt8=
-    - secure: WEpsEd1UbWkcP1oEDOOvQwYtz06hggWq6u2gORbgAP8jfTBf39Dfdfs55nvPBAzEavVk0xqSM0qaiCaiHjpyTJTa+kawAfO0SeZgWur58O+pxIq/cZ0MxIyIlgV5Ea3FlYc33govtMmVpHcBbMWgzNseUclMxjo5owFuHsTcm/aLORzA8cpmRRcpXfMoDnRjyNZmadPn6a+s+we3xj8G4izfdxlT3u/G3tN9RSh4DDbxoNonG/R70JqpjgDxibngT8et34Mm672IIyAJqrzof2XOSuZAb+BAsAXSJz97elQxInqt7F6LcagzzXIEGhQd6qzKJj1V+KA62fArVDiSPRvEhO2+x1tWFCkvhLU97hZzF8lf6BaCKhHbBrc+H1OXfi290Eq/Ip4F8AaONvpRLNqi3ss5zd54vg/0RIx4vMqyNzPQ083BP7MyBix1pt9sEPNzfABSRX+IkoWIrooG0Pag/vawPe0POC5qWO8l9nNl3eypmyUcPuT8FUNbEKF4g7E2AF5W6kMsTCLJpN+jpTibCDnKdabMJz8j3QrroUVa8spfni1kcnJYFs3RlW+gLgEKrTm4GXkxmIMU6TbhSfDp49UzN2a1bZvdYbRrcEk+P5VjOpB01Q9dbWecUadhTqkflL9s72D1TO5NbmLgAG/Obgnqp+cBW2CntdncyoM=
-    - secure: EBJn9M288Lc5qGXkUgDbdqQ00QnN6QoNqL6a/TtmIsfpmR25gzFrH69ARuGeZWwZSkLGb8uT/mxwbIc1EU/RUsfcPqAHriXdyFR7Ocl1h/aozFfukN6tTQJ14V1wGTMoo5+1RXH8GYlJGr6WbcntMA57wRM3GwenWIZJP7ozNRTv3pigRlLdUyw4DozjFFZwcC5m/nI6xYdxLvFNvDCddWp2elHqGM4Aclatt29kgEfwTtGu2xrmyi5sph5T40MMd7x8BmhHJwmSIUhUR6e7IZuHR0t+1LQb/rtU27+h3e2K6IAspTerD5+Sxdq+s1g5GKA3ETPqSBXsRBzHusEgwaBnvD5bkinPRTuknmRNWq55gKhRR6jMCb/9+iLMVxYMutAAVl95JA9qIi9DW40WmDxsJjx9NUcQkiA0nnilFTKCPkwDgiTYSx3kMRep9ckcVY+b94zFUM4gRnfP3xZ0HSOqFl2u8PiVrci1EFCn7eFwMYDicx4YueTac3cxP/GYNtRYHvB1BKLSMt61JkX72dT4te3iTFWjhixs5ebfw0d9Db++FFYxwk1DLfzaUUxQV9W70dcF2sXosz0oB8lkKJl5ko95ZdKze9FGIB8p8VW9V5lwv7gcLXit/SnS5iPOgzACduv5eiB06hF0FXGEFZwQTLewmYxnfe8mELm6cm8=
-
-
+  - PRODUCTION=true
+  - HUGO_RELEASE=0.58.1
+  - secure: iqxB6b+Skx69blXlNuGWXyGfyrSf1X8pwj7UI+feT0GLE1CaVa2DLPhmI7QhXO0DBSXvqDdOmlFBZEibaFd0AIfDJdI/z43sErXfQuOE54xNk/avlwAhWxrUIpIgZRtMNGzTvBTGG2gz09mGuyaeNbyZK+WQHaRnERQdQOPAC4Z1TbEx2MkPrku7CwM+nxb6wGKQDq/bvcXdp2rrSeFD+mzLYkGoLCA5crLaEaGJBqb1XVSIBMdUV9ysaqLgqXQcJuD9/AtZDbn3nISvG2+UbGkW5EDtMvSL3nCx9JIzVubut62q/5bkjewthHKUjFhSkVr2Dl96vDh+SEzd+cHHA+Nw5XB281rLKpL3pqwtoWWBPs3LLgMAvu5b+jIc+0rcm96G57rUkJHT+Shyd9NJkP3N3tTEByHPwxeLhUnXn11nPyZClZrqK8UIUFzE/0ysscGNNlJsMlgT5TaN6GWAPDucyq9C3Iose8rs+XFABCY9qehPfX7lp7WTQMLG7KrNZ1Wof5yjDDpi9GYALTcAF6vRF1t6ea66Pv07thUMw1ZsW3+h1K55Nb/bPCE5I5TeBJZVNlbId+BM7DIJBUHK7lMl8LbvjCOmpxY3qk2Mj2Trnf/BJYS4iFZqavF8stf/7xDKP602rJsYeicFNh28JIoAUmluZp9QkexKEH32PU8=
+  - secure: LGNeTdxZW28GBok5YAAcR0oHyalfCqH4roO99EQOO/wwOmPyJV4KyGf2FPVxxdKZ0hgnH092zxcR475o+RsaooPdCsZz0JmUkm4FImeho/0gYEE8iv9QSGXZKvFQPLEwlqoFE0t/RIrHqEmOhPogNaFqp032DAmOBikb93PvWENyG5sDmpo5PklZTpGrwzrihs5Q8UH87ZFd+/kmq0wCB/7XRXALdcw4hV0KRVHbWaZ3PWdhd8pSj98Hr0nnTSljso2WTE5fDznfqOmcMrudbjUvxx/wsSHsX+k9e+CVdzrxlrcT98JSHdom0NpLtroTqhwJFdosefLcAVfQfYSwkscunv3EfxwPx6S50Au4pieBsc4pYMshFqyJ7E8xqV/o6v44t6QPPSe+MQdt5IqaXOmcn3GLCDECbtGxmkvDbMI3xhlMA2kH/yqyVZD8oAaSSbF//nnbsnxieO1QoB4Ozo1jHN4HLY57Pv6AlEDosOhebh98J6lZjcs+El8k5Uy3O6OF0dv6Y79WGjdsFOx2Sz1/fFJNxRFJ0fZQZgFqdohGUpAbEssY3tSfJ14OLvrSwlGjdQil5ce40/O2Xm1QtoyZ4QEsKQMXZXFNvqd982di3p4xa3CvNALLwFRUUU1XwHqDBVH5MtVnUI7LXRFOFs1H2lJjUchDWDU2psTBiFg=
+  - secure: QdkC/pksFuR0S0g3ctiLJssfCBiEmGkvnNMU51d1UOCh7BWGvRa95zaySjvVJXN2OLef77oTqejSLQa2TM0iBqfypuY9vwYRdv4oASaxfhkAfMLF3qVCF7YPDzOudHLi/vsiqGDbo9JkkSnKIYtnw84PXYFPsE2W1GjCkbWD4UirrW/h9QkbzHxGvD5StTlqsa97YsNTKX6v4dzm8MMgCSU7rr3PpEutBVV8VoXuhCuztocm1OfrgIVrNN/kDc9KWA+Kk1cLSCdlskVF9gMwKRyMAKN6eH1e8E28ZQn1fUMzsNU4pUTc8zCQgu1lFYf9se9TqKXlo2kQcqsoEh9viNTs+IgAYYuYMgY+861ebZ6baX0fvleB/kw6E1/6Sqpb4atYftIB/UG647ZgMpq3//xn8VsHvoHLGU1wfIxw61xWqGbL402dyd8t8a4e/0/2Ig41t4jopYRaEcUeX9OY4xn4i25nIVQd1qGDv0fDkNFJ5ZiM4C3/c7ShNN4HCCRw16vh9+PxQEHbIOAkDIRoCe3GNBKDJwtIoieOezBLPsm6IAp21JMI/4U3eHM6lkHV6PwvX15DZEXEBkzI1uP9mzwurUfFJOr9HY7vCSN4e+qlZlTA3gRs0gr0z88qVnjlm9lYkozhJtPKYdyqyPCG22SaIR4GY3QDFTZILaOQwIg=
