@@ -1,4 +1,4 @@
-baseurl                 = "/"
+baseurl                 = "/home"
 DefaultContentLanguage  = "en"
 title                   = "Hugo Future Imperfect Slim"
 theme                   = "hugo-future-imperfect-slim"
