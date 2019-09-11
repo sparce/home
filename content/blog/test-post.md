@@ -1,13 +1,14 @@
 +++
-author = ""
-categories = []
-date = ""
+author = "SP"
+categories = ["test"]
+date = "2019-09-11"
 description = ""
-images = []
+featured = ""
+featuredalt = ""
+featuredpath = ""
 linktitle = ""
-tags = []
-title = ""
-type = ""
+title= "Test post"
+type = "post"
 
 +++
 # Header here
