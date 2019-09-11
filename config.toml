@@ -108,12 +108,6 @@ disableLanguages        = [""]
   # Sets the menu items in the navigation bar
   # Identifier prepends a Font Awesome icon to the menu item
   [[menu.main]]
-    name              = "Home"
-    url               = "/"
-    pre               = "<i class='fa fa-home'></i>"
-    weight            = 1
-
-  [[menu.main]]
     name              = "About"
     url               = "about/"
     pre               = "<i class='far fa-id-card'></i>"
