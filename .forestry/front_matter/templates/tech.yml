@@ -1,4 +1,18 @@
 ---
 label: Tech
 hide_body: false
-fields: []
+fields:
+- name: author
+  type: select
+  default: ''
+  config:
+    required: false
+    options:
+    - Stephen
+    - Josie
+    source:
+      type: simple
+      section: 
+      file: 
+      path: 
+  label: author
